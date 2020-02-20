@@ -4,6 +4,8 @@ final int KEY_PRESSED = 1;
 final int KEY_RELEASED = 2;
 final int KEY_TYPED = 3;
 
+final String keyHandlerVersion = "";
+
 public class keyHandler{
   PApplet parent;
   Method bindingPressed;
@@ -23,15 +25,28 @@ public class keyHandler{
   keyHandler(){}
   
   keyHandler(PApplet parent_){
+    println("********************************\n" +
+            " keyHandler Version Alpha 0.0.0 \n" + 
+            "********************************");
+    
     parent = parent_;
     parent.registerMethod("keyEvent", this);
     
-    try{bindingPressed = parent.getClass().getMethod(bP, keyAction.class);}catch(Exception e){println("no" + bP + "function");}
-    try{bindingReleased = parent.getClass().getMethod(bR, keyAction.class);}catch(Exception e){println("no" + bR + "function");}
-    try{bindingTyped = parent.getClass().getMethod(bT, keyAction.class);}catch(Exception e){println("no" + bT + "function");}
-    try{binding = parent.getClass().getMethod(b, keyAction.class);}catch(Exception e){println("no" + b + "function");}
+    bindingPressed = createMethod(bP);
+    bindingReleased = createMethod(bR);
+    bindingTyped = createMethod(bT);
+    binding = createMethod(b);
     
     hotKeys = new ArrayList<keyBind>(0);
+  }
+  
+  Method createMethod(String n_){
+    try{
+      return parent.getClass().getMethod(n_, keyAction.class);
+    }catch(Exception e){
+      println("no" + n_ + "function");
+      return null;
+    }
   }
   
   public void keyEvent(KeyEvent event_){
